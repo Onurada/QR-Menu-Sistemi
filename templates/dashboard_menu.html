@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menü Düzenle - {{ current_user.username }}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(135deg, #1e1f2e 0%, #191b2c 100%); color: #e0e0e0; font-family: 'Poppins', sans-serif; padding-top: 80px; }
+    .navbar { background: rgba(18,20,33,0.9); }
+    .card { background: #1f1f2e; border: none; }
+    .form-control, .form-select { background: #2c2d3e; border: 1px solid #444; color: #e0e0e0; }
+    .form-control:focus { background: #2c2d3e; border-color: #2c5364; box-shadow: none; }
+    .btn-primary { background: #2c5364; border: none; }
+    .header { padding: 60px 0 30px; text-align: center; }
+    table { color: #e0e0e0; }
+    .menu-card { padding: 0.75rem 1rem; margin-bottom: 0.75rem; display:flex; align-items:flex-start; }
+    .menu-info { flex:1; }
+    .product-img { width:80px; height:80px; object-fit:cover; border-radius:4px; margin-right:1rem; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('dashboard') }}">QR Menü</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navLinks">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <section class="header mt-5 pt-4">
+    <div class="container"><h2>Menü Düzenle</h2><p>Ürün ekleyin veya var olanı güncelleyin.</p></div>
+  </section>
+
+  <!-- Form -->
+  <section class="container mb-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,msg in messages %}
+            <div class="alert alert-{{category}}">{{msg}}</div>{% endfor %}{% endif %}{% endwith %}
+          <!-- enctype allows image upload -->
+          <form method="POST" action="{{ url_for('dashboard_menu') }}" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="name" class="form-label">Ürün Adı</label>
+              <input type="text" class="form-control" id="name" name="name" required placeholder="Ürün adı">
+            </div>
+            <div class="mb-3">
+              <label for="price" class="form-label">Fiyat (₺)</label>
+              <input type="number" step="0.01" class="form-control" id="price" name="price" required placeholder="Örn: 25.50">
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Açıklama</label>
+              <textarea class="form-control" id="description" name="description" rows="2" placeholder="Opsiyonel açıklama"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="image" class="form-label">Ürün Görseli (opsiyonel)</label>
+              <input type="file" class="form-control" id="image" name="image" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Ekle/Güncelle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Existing items -->
+    <div class="row">
+      <div class="col-md-10 mx-auto">
+        <div class="card p-3">
+          <table class="table table-dark table-hover mb-0">
+            <thead><tr><th>Görsel</th><th>Ad</th><th>Fiyat</th><th>Açıklama</th></tr></thead>
+            <tbody>
+              {% for item in menu_items %}
+              <tr>
+                <td><img src="{{ item.image_url or url_for('static', filename='placeholder.png') }}" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:4px;"></td>
+                <td>{{ item.name }}</td>
+                <td>₺{{ "%.2f"|format(item.price) }}</td>
+                <td>{{ item.description }}</td>
+              </tr>
+              {% else %}
+              <tr><td colspan="4" class="text-center">Henüz öğe yok.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

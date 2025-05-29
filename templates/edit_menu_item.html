@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menü Öğesini Düzenle - {{ item.name }}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(135deg, #1e1f2e 0%, #121421 100%); color: #e0e0e0; font-family: 'Poppins', sans-serif; padding-top: 80px; }
+    .navbar { background: rgba(18,20,33,0.9); }
+    .container { max-width: 600px; }
+    .card { background: #1f1f2e; border: none; }
+    .form-control, .form-label { color: #e0e0e0; }
+    .form-control { background: #2c2d3e; border: 1px solid #444; }
+    .form-control:focus { background: #2c2d3e; color: #fff; border-color: #2c5364; box-shadow: none; }
+    .btn-primary { background: #2c5364; border: none; }
+    .header { text-align: center; margin-bottom: 1rem; }
+    a { color: #2c5364; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('dashboard') }}">QR Menü</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navLinks">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navLinks">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Çıkış</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-5 pt-4">
+    <div class="card p-4">
+      <div class="header">
+        <h2>Menü Öğesini Düzenle</h2>
+        <p>{{ item.name }}</p>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="alert alert-{{ category }} text-center" role="alert">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <form method="POST" action="{{ url_for('edit_menu_item', item_id=item.id) }}" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="name" class="form-label">Ürün Adı</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="price" class="form-label">Fiyat (₺)</label>
+          <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ item.price }}" required>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Açıklama</label>
+          <textarea class="form-control" id="description" name="description" rows="3">{{ item.description }}</textarea>
+        </div>
+        <div class="mb-3">
+          <label for="image" class="form-label">Yeni Görsel (opsiyonel)</label>
+          <input type="file" class="form-control" id="image" name="image" accept="image/*">
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">Güncelle</button>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">İptal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
