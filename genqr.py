@@ -1,6 +1,6 @@
 import qrcode
 
-# 1. QR objesini oluştur
+
 def genqr(data, filename):
     qr = qrcode.QRCode(
         version=1,
@@ -9,12 +9,12 @@ def genqr(data, filename):
         border=4,
     )
     
-    # 2. Veriyi QR koduna ekle
+
     qr.add_data(data)
     qr.make(fit=True)
     
-    # 3. QR kodunu oluştur
+
     img = qr.make_image(fill_color="black", back_color="white")
     
-    # 4. QR kodunu dosyaya kaydet
+
     img.save("qrcodes/" + filename + ".png")
